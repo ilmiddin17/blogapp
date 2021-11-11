@@ -1,0 +1,31 @@
+{%extends 'base.html'%}
+{%load blog_tags%}
+{%block content%}
+<div style="margin-left:20px;">
+	{%for post in posts%}
+		<div class="list-group">
+  			<h2 class="ui header">
+  				
+			</h2>
+		<div class="ui card" style="width: 70%;">
+  			<div class="content">
+    			<div class="right floated meta">{{post.created}}</div>
+					<a href="{{post.get_absolute_url}}" class=""><h5>{{post.title|markdown}}</h5></a>
+  				</div>
+  			<div class="content">
+   				<span class="right floated">
+      				<i class="tag icon"></i>
+      				<span>
+      					{%for tag in post.tags.all%}
+							<a style="font-family: sans-serif; margin-left: 5px;" href="{%url 'blog:postlist_by_tag' tag.slug%}">#{{tag.name}}</a>
+							{%if not forloop.last%}, {%endif%}
+						{%endfor%}
+      				</span>
+    			</span>
+    			{{post.body|truncatechars:90|markdown}}
+  			</div>
+		</div>
+	{%endfor%}
+</div>
+	{%include 'pagination.html' with page=posts%}
+{%endblock content%}

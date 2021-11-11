@@ -1,0 +1,16 @@
+{%extends 'base.html'%}
+
+{%load blog_tags%}
+{% block content%}
+	{%if sent %}
+		<h3 style="margin-left:20px;" class="ui header">Email succesfully sent to {{form.cleaned_data.to}}</h3>
+
+	{%else%}
+		<h3 class="ui header" style="margin-left:20px;">Share {{post.title|markdown}} </h3>
+		<form class="ui form" method="post" style="margin-left:20px; margin-right: 65%;">
+			{%csrf_token%}
+			{{form.as_p}}
+			<input class="btn btn-primary" type="submit" value="Send" name="">
+		</form>
+	{%endif%}
+{%endblock content%}

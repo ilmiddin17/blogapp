@@ -1,0 +1,81 @@
+{%extends 'base.html'%}
+{%load blog_tags %}
+
+{%block title%}{{post.title}}{%endblock title%}
+
+{%block content%}
+<div style="margin-left:20px; margin-right: 20px;margin-top: 15px; margin-bottom: 10%;">
+<div class="ui raised segment">
+  	<h2 class="ui left floated header">
+		{{post.title|title|markdown}}
+		</h2>
+	<p style="color:powderblue;">Published {{post.publish}} by {{post.author|title}} </p>
+  <p style="margin-top:15px; margin-left:5px">{{post.body|markdown}}</p>
+  <p>
+  	<a href="{% url 'blog:postshare' post.id %}">Share this post</a>
+  </p>
+</div>
+
+  <div class="ui segment">
+    <h3>Similar posts</h3>
+	{%for post in similar_posts%}
+		<div class="ui clearing segment">
+			<p>
+				<a href="{{post.get_absolute_url}}">{{post.title|markdown}}</a>
+			</p>
+		</div>
+	{%empty%}
+			<p>There are no similar posts yet.</p>
+	{%endfor%}
+  </div>
+
+  <div class="ui segment">
+  		{% with comments.count as total_comments %}
+			<h6 class="" style="text-align: center;">
+				{{total_comments}} comment{{total_comments|pluralize}}
+			</h6>
+		{%endwith%}
+
+    {%for comment in comments%}
+    	<div class="ui comments">
+  			<div class="comment">
+    			<div class="content">{{comment.name}}</div>
+      			<div class="">
+      				<span class="metadata">
+      						<p style="display:inline-block;margin-right:10px;">{{comment.body|linebreaks}}</p>
+      						<p style="display:inline-block; color:purple;">{{comment.created}}</p>
+      				</span>
+      			</div>
+    		</div>
+  	{%empty%}
+		<p>There are no comments yet.</p>
+	{%endfor%}
+
+{%if new_comment%}
+	<h5>Your comment has been added. Back to the <a href="{{post.get_absolute_url}}">post</a></h5>
+{%else%}
+<div style="margin-top:15px;">
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">New comment</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="exampleModalLabel">Add a new comment</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" class="ui form">
+					{%csrf_token%}
+					{{comment_form.as_p}}
+					<p style="display:inline;"><input type="submit" name="" value="Add comment" class="ui button"></p>
+        	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="display:inline;">Close</button>
+				</form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{%endif%}
+</div>
+{%endblock content%}

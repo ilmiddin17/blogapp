@@ -1,0 +1,34 @@
+{%extends 'base.html'%}
+{%load blog_tags%}
+
+{%block title%}Search{%endblock title%}
+
+{%block content%}
+<div style="margin-left:20px; margin-top: 15px;">
+	{%if query%}
+		<h1>Posts containing "{{query}}"</h1>
+		<h3>
+			{%with results.count as total_results%}
+				Found {{total_results}} result{{total_results|pluralize}}
+			{%endwith%}
+		</h3>
+		{%for post in results%}
+			<h4 style="margin-left:20px;">
+				<a href="{{post.get_absolute_url}}">{{post.title|markdown}}</a>
+			</h4>
+			<p style="margin-left:20px;">
+				{{post.body|markdown|truncatewords_html:5}}
+			</p>
+		{%empty%}
+			<p>There are no results for {{query}}.</p>
+		{%endfor%}
+		<p><a href="{%url 'blog:post_search'%}">Search again</a></p>
+	{%else%}
+		<h1 style="margin-left: 20px;">Search for posts</h1>
+		<form method="get" class="ui form" style="margin-left:10px; margin-right:65%">
+			{{form.as_p}}
+			<input type="submit" value="Search" name="" class="btn btn-outline-success">
+		</form>
+	{%endif%}
+</div>
+{%endblock content%}
